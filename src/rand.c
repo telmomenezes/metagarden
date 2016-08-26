@@ -4,7 +4,10 @@
 
 void rand_init()
 {
+    int i;
     srand(time(NULL));
+    for (i = 0; i < 1000000; i++)
+        rand();
 }
 
 
