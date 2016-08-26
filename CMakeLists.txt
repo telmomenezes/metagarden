@@ -1,0 +1,69 @@
+########### Project name ###########
+
+PROJECT(metagarden)
+SET(METAGARDEN_MAJOR "0")
+SET(METAGARDEN_MINOR "1")
+SET(VERSION "${METAGARDEN_MAJOR}.${METAGARDEN_MINOR}")
+SET(PACKAGE metagarden)
+
+
+########### Global settings ###########
+
+CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
+SET(CMAKE_VERBOSE_MAKEFILE OFF)
+
+OPTION(DEBUG "Debug settings" ON)
+
+if(APPLE)
+    set(CMAKE_MACOSX_RPATH ON)
+endif()
+
+########### Compiler settings ###########
+
+IF(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX OR (CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
+    IF(DEBUG)
+        SET(CMAKE_CXX_FLAGS "-g")
+    ELSE(DEBUG)
+        SET(CMAKE_CXX_FLAGS "-O3")
+    ENDIF(DEBUG)
+    SET(DEFINITIONS ${DEFINITIONS} -D__METAGARDEN_COMPILER_GCC)
+ENDIF(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX OR (CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
+
+IF(CMAKE_C_COMPILER MATCHES cl)
+    SET(DEFINITIONS ${DEFINITIONS} -D__METAGARDEN_COMPILER_CL)
+ENDIF(CMAKE_C_COMPILER MATCHES cl)
+
+
+########### System defines ###########
+
+IF(WIN32)
+    SET(DEFINITIONS ${DEFINITIONS} -D__METAGARDEN_OS_WIN32)
+ENDIF(WIN32)
+IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    SET(DEFINITIONS ${DEFINITIONS} -D__METAGARDEN_OS_OSX)
+ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+
+
+########### Include dirs ###########
+
+SET(INCLUDE_DIRS include)
+
+
+########### Source files ###########
+
+SET(SOURCE_FILES ${SOURCE_FILES}
+    src/main.c
+    src/prog.c
+    src/rand.c
+    src/config.c
+    src/functions.c
+    src/str_utils.c)
+
+
+########### Targets ###########
+
+ADD_DEFINITIONS(${DEFINITIONS})
+
+INCLUDE_DIRECTORIES(${INCLUDE_DIRS})
+
+ADD_EXECUTABLE(mgarden ${SOURCE_FILES})
